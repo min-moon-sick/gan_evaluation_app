@@ -29,7 +29,7 @@ with tab1:
         row = image_pairs.iloc[st.session_state.ex1_index]
         col1, col2 = st.columns(2)
         with col1:
-            st.image(row["real_path"], caption="실제 이미지", use_column_width=True)
+            st.image(row["real_path"], caption="실제 이미지", use_container_width=True)
         with col2:
             st.image(row["virtual_path"], caption="가상 이미지", use_column_width=True)
         score = st.radio("유사성 점수 (1=전혀 유사하지 않음, 5=매우 유사함)", [1, 2, 3, 4, 5], horizontal=True)
