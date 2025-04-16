@@ -69,7 +69,8 @@ with tab1:
             }])
             result.to_csv(EX1_RESULT_PATH, mode="a", header=not os.path.exists(EX1_RESULT_PATH), index=False)
             st.session_state.ex1_index += 1
-            st.experimental_rerun()
+            st.success("제출 완료! 다음 항목으로 이동하려면 페이지를 새로고침해주세요.")
+            st.stop()
     else:
         st.success("실험 1 평가가 완료되었습니다.")
 
@@ -80,7 +81,6 @@ with tab2:
     st.header("실험 2: 블라인드 테스트 (실제 / 가상 맞히기)")
     idx = st.session_state.ex2_index
     if idx < len(blind_images):
-        # 순서를 고정해 오류 방지
         shuffled = blind_images.sample(frac=1, random_state=42).reset_index(drop=True)
         row = shuffled.iloc[idx]
         st.image(row["image_path"], caption="이 이미지는 실제일까요, 가상일까요?", use_container_width=True)
@@ -96,6 +96,7 @@ with tab2:
             }])
             result.to_csv(EX2_RESULT_PATH, mode="a", header=not os.path.exists(EX2_RESULT_PATH), index=False)
             st.session_state.ex2_index += 1
-            st.experimental_rerun()
+            st.success("제출 완료! 다음 항목으로 이동하려면 페이지를 새로고침해주세요.")
+            st.stop()
     else:
         st.success("실험 2 평가가 완료되었습니다.")
