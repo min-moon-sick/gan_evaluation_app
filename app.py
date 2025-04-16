@@ -30,8 +30,12 @@ if "ex2_index" not in st.session_state:
     st.session_state.ex2_index = 0
 
 # 데이터 로딩
-image_pairs = pd.read_csv(PAIR_CSV)
-blind_images = pd.read_csv(BLIND_CSV)
+try:
+    image_pairs = pd.read_csv(PAIR_CSV)
+    blind_images = pd.read_csv(BLIND_CSV)
+except Exception as e:
+    st.error(f"데이터 로딩 중 오류 발생: {e}")
+    st.stop()
 
 # UI 시작
 st.title("병리학자 정성 평가 플랫폼")
@@ -63,10 +67,7 @@ with tab1:
                 "score": score,
                 "comment": comment
             }])
-            if os.path.exists(EX1_RESULT_PATH):
-                result.to_csv(EX1_RESULT_PATH, mode="a", header=False, index=False)
-            else:
-                result.to_csv(EX1_RESULT_PATH, index=False)
+            result.to_csv(EX1_RESULT_PATH, mode="a", header=not os.path.exists(EX1_RESULT_PATH), index=False)
             st.session_state.ex1_index += 1
             st.experimental_rerun()
     else:
@@ -79,7 +80,7 @@ with tab2:
     st.header("실험 2: 블라인드 테스트 (실제 / 가상 맞히기)")
     idx = st.session_state.ex2_index
     if idx < len(blind_images):
-        # row = blind_images.sample(frac=1, random_state=42).iloc[idx]
+        # 순서를 고정해 오류 방지
         shuffled = blind_images.sample(frac=1, random_state=42).reset_index(drop=True)
         row = shuffled.iloc[idx]
         st.image(row["image_path"], caption="이 이미지는 실제일까요, 가상일까요?", use_container_width=True)
@@ -93,10 +94,7 @@ with tab2:
                 "label": row["label"],
                 "prediction": prediction
             }])
-            if os.path.exists(EX2_RESULT_PATH):
-                result.to_csv(EX2_RESULT_PATH, mode="a", header=False, index=False)
-            else:
-                result.to_csv(EX2_RESULT_PATH, index=False)
+            result.to_csv(EX2_RESULT_PATH, mode="a", header=not os.path.exists(EX2_RESULT_PATH), index=False)
             st.session_state.ex2_index += 1
             st.experimental_rerun()
     else:
