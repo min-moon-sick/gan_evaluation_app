@@ -31,7 +31,7 @@ with tab1:
         with col1:
             st.image(row["real_path"], caption="실제 이미지", use_container_width=True)
         with col2:
-            st.image(row["virtual_path"], caption="가상 이미지", use_column_width=True)
+            st.image(row["virtual_path"], caption="가상 이미지", use_container_width=True)
         score = st.radio("유사성 점수 (1=전혀 유사하지 않음, 5=매우 유사함)", [1, 2, 3, 4, 5], horizontal=True)
         comment = st.text_area("판단 근거 또는 코멘트 (선택 사항)")
         if st.button("다음 (실험 1)"):
@@ -54,7 +54,7 @@ with tab2:
     st.header("실험 2: 블라인드 테스트")
     if st.session_state.ex2_index < len(blind_images):
         row = blind_images.sample(frac=1, random_state=42).iloc[st.session_state.ex2_index]
-        st.image(row["image_path"], caption="이 이미지는 실제일까요? 가상일까요?", use_column_width=True)
+        st.image(row["image_path"], caption="이 이미지는 실제일까요? 가상일까요?", use_container_width=True)
         prediction = st.radio("이 이미지의 정체는?", ["실제", "가상"])
         if st.button("다음 (실험 2)"):
             result_df = pd.DataFrame([{
