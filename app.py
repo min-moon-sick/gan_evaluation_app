@@ -79,7 +79,9 @@ with tab2:
     st.header("실험 2: 블라인드 테스트 (실제 / 가상 맞히기)")
     idx = st.session_state.ex2_index
     if idx < len(blind_images):
-        row = blind_images.sample(frac=1, random_state=42).iloc[idx]
+        # row = blind_images.sample(frac=1, random_state=42).iloc[idx]
+        shuffled = blind_images.sample(frac=1, random_state=42).reset_index(drop=True)
+        row = shuffled.iloc[idx]
         st.image(row["image_path"], caption="이 이미지는 실제일까요, 가상일까요?", use_container_width=True)
 
         prediction = st.radio("이 이미지의 정체는?", ["실제", "가상"], key=f"predict_{idx}")
