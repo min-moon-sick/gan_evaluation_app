@@ -1,0 +1,5 @@
+image_path,label
+data/split_images/246_A_SS24-27810#KID#HE_1#1_150120_21088_21792_train.jpg_left.png,real
+data/split_images/246_A_SS24-27810#KID#HE_1#1_150120_21088_21792_train.jpg_right.png,fake
+data/split_images/247_A_SS24-27810#KID#HE_1#1_150120_21712_27072_train.jpg_left.png,real
+data/split_images/247_A_SS24-27810#KID#HE_1#1_150120_21712_27072_train.jpg_right.png,fake
