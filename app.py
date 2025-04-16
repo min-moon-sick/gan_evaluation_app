@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 import os
 from PIL import Image
+from save_to_gsheet import save_csv_to_sheet
 
 # 경로 설정
 PAIR_CSV = "data/image_pairs.csv"
@@ -69,7 +70,7 @@ with tab1:
             }])
             result.to_csv(EX1_RESULT_PATH, mode="a", header=not os.path.exists(EX1_RESULT_PATH), index=False)
             st.session_state.ex1_index += 1
-            st.success("제출 완료! 다음 항목으로 이동하려면 페이지를 새로고침해주세요.")
+            st.success("제출 완료! 다음 항목으로 이동.")
             st.stop()
     else:
         st.success("실험 1 평가가 완료되었습니다.")
@@ -96,7 +97,17 @@ with tab2:
             }])
             result.to_csv(EX2_RESULT_PATH, mode="a", header=not os.path.exists(EX2_RESULT_PATH), index=False)
             st.session_state.ex2_index += 1
-            st.success("제출 완료! 다음 항목으로 이동하려면 페이지를 새로고침해주세요.")
+            st.success("제출 완료! 다음 항목으로 이동.")
             st.stop()
     else:
         st.success("실험 2 평가가 완료되었습니다.")
+
+if (
+    st.session_state.ex1_index >= len(image_pairs) and
+    st.session_state.ex2_index >= len(blind_images) and
+    not st.session_state.get("upload_done", False)
+):
+    save_csv_to_sheet("results/results_ex1.csv", "실험1결과")
+    save_csv_to_sheet("results/results_ex2.csv", "실험2결과")
+    st.session_state.upload_done = True
+    st.success("✅ Google Sheets에 평가 결과가 자동 저장되었습니다!")
