@@ -24,5 +24,6 @@ def save_csv_to_sheet(csv_path, sheet_name, spreadsheet_name="가상염색 평�
 
     # CSV 불러와서 업로드
     df = pd.read_csv(csv_path)
+    df = df.fillna("")
     worksheet.clear()
     worksheet.update([df.columns.values.tolist()] + df.values.tolist())
