@@ -72,6 +72,10 @@ with tab1:
             st.success("제출 완료! 다음 항목으로 이동.")
             st.stop()
     else:
+        st.write(f"실험 1 이미지 폴더: {EX1_IMAGE_DIR}")
+        st.write(f"이미지 개수: {len(ex1_image_list)}")
+        if len(ex1_image_list) > 0:
+            st.write("예시 파일:", ex1_image_list[:3])
         st.success("실험 1 평가가 완료되었습니다.")
 
 # ---------------------
