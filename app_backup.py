@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import os
@@ -8,19 +9,11 @@ from save_to_gsheet import save_csv_to_sheet
 PAIR_CSV = "data/image_pairs.csv"
 BLIND_CSV = "data/blind_images.csv"
 RESULT_DIR = "results"
-EX1_IMAGE_DIR = "/mnt/14T-2/ktmin/glomerulus_segmentation/inference_batch_save_mask_contour_binary/input/"
 EX1_RESULT_PATH = os.path.join(RESULT_DIR, "results_ex1.csv")
 EX2_RESULT_PATH = os.path.join(RESULT_DIR, "results_ex2.csv")
 
 # 디렉토리 확인
 os.makedirs(RESULT_DIR, exist_ok=True)
-
-# 실험 1 이미지 리스트 불러오기
-ex1_image_list = []
-if os.path.isdir(EX1_IMAGE_DIR):
-    for fname in sorted(os.listdir(EX1_IMAGE_DIR)):
-        if fname.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.tif', '.tiff')):
-            ex1_image_list.append(os.path.join(EX1_IMAGE_DIR, fname))
 
 # 사용자 정보 입력 (사이드바)
 st.sidebar.title("사용자 정보 입력")
@@ -48,24 +41,32 @@ except Exception as e:
 # UI 시작
 st.title("병리학자 정성 평가 플랫폼")
 
-tab1, tab2 = st.tabs(["실험 1: 병변(글로메룰루스) 존재 판별 (있다/없다)", "실험 2: 블라인드 테스트"])
+tab1, tab2 = st.tabs(["실험 1: 5점 척도 + 코멘트", "실험 2: 블라인드 테스트"])
 
 # ---------------------
-# 실험 1 (binary task)
+# 실험 1
 # ---------------------
 with tab1:
-    st.header("실험 1: 병변(글로메룰루스) 존재 판별 (있다/없다)")
+    st.header("실험 1: 유사성 평가 (1~5점 + 코멘트)")
     idx = st.session_state.ex1_index
-    if idx < len(ex1_image_list):
-        img_path = ex1_image_list[idx]
-        st.image(img_path, caption=f"이미지 {idx+1} / {len(ex1_image_list)}", use_container_width=True)
-        answer = st.radio("이 이미지에 병변(글로메룰루스)이 있습니까?", ["있다", "없다"], horizontal=True)
+    if idx < len(image_pairs):
+        row = image_pairs.iloc[idx]
+        col1, col2 = st.columns(2)
+        with col1:
+            st.image(row["real_path"], caption="실제 이미지", use_container_width=True)
+        with col2:
+            st.image(row["virtual_path"], caption="가상 이미지", use_container_width=True)
+
+        score = st.radio("유사성 점수 (1=전혀 유사하지 않음, 5=매우 유사함)", [1, 2, 3, 4, 5], horizontal=True)
+        comment = st.text_area("판단 근거 또는 코멘트 (선택 사항)", key=f"comment_{idx}")
         if st.button("제출 (실험 1)", key=f"submit_ex1_{idx}"):
             result = pd.DataFrame([{
                 "evaluator": name,
                 "affiliation": affiliation,
-                "image_path": img_path,
-                "answer": answer
+                "real_path": row["real_path"],
+                "virtual_path": row["virtual_path"],
+                "score": score,
+                "comment": comment
             }])
             result.to_csv(EX1_RESULT_PATH, mode="a", header=not os.path.exists(EX1_RESULT_PATH), index=False)
             st.session_state.ex1_index += 1
@@ -102,7 +103,7 @@ with tab2:
         st.success("실험 2 평가가 완료되었습니다.")
 
 if (
-    st.session_state.ex1_index >= len(ex1_image_list) and
+    st.session_state.ex1_index >= len(image_pairs) and
     st.session_state.ex2_index >= len(blind_images) and
     not st.session_state.get("upload_done", False)
 ):
