@@ -8,7 +8,9 @@ from save_to_gsheet import save_csv_to_sheet
 PAIR_CSV = "data/image_pairs.csv"
 BLIND_CSV = "data/blind_images.csv"
 RESULT_DIR = "results"
-EX1_IMAGE_DIR = "/mnt/14T-2/ktmin/glomerulus_segmentation/inference_batch_save_mask_contour_binary/input/"
+# EX1_IMAGE_DIR = "/mnt/14T-2/ktmin/glomerulus_segmentation/inference_batch_save_mask_contour_binary/input/"
+EX1_IMAGE_DIR = "data/task_1_glomerulus"
+
 EX1_RESULT_PATH = os.path.join(RESULT_DIR, "results_ex1.csv")
 EX2_RESULT_PATH = os.path.join(RESULT_DIR, "results_ex2.csv")
 
