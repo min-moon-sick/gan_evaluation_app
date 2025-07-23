@@ -5,11 +5,11 @@ from PIL import Image
 from save_to_gsheet import save_csv_to_sheet
 
 # 경로 설정
-RESULT_DIR = "results"
+RESULT_DIR = "data"
 # EX1_IMAGE_DIR = "/mnt/14T-2/ktmin/glomerulus_segmentation/inference_batch_save_mask_contour_binary/input/"
 EX1_IMAGE_DIR = "data/task_1_glomerulus"
 
-EX1_RESULT_PATH = os.path.join(RESULT_DIR, "results_ex1.csv")
+EX1_RESULT_PATH = os.path.join(RESULT_DIR, "make_dataset_evaluation.csv")
 
 
 # 디렉토리 확인
