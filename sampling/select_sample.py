@@ -10,7 +10,7 @@ SAMPLE_PATH = "/mnt/14T-2/ktmin/glomerulus_segmentation/inference_batch_save_mas
 SAMPLE_DIR = "/workspace/evaluation_app/data/task_1_glomerulus"
 SAMPLE_CSV_PATH = "/mnt/14T-2/ktmin/glomerulus_segmentation/inference_batch_save_mask_contour_binary/patch_binary.csv"
 OUTPUT_CSV = "/workspace/evaluation_app/sampling/sampled_patches.csv"
-SAMPLE_N = 20
+SAMPLE_N = 10
 
 # 염색 그룹별 키워드 정의
 STAIN_GROUPS = {
