@@ -5,7 +5,7 @@ from PIL import Image
 from save_to_gsheet import save_csv_to_sheet
 
 # 경로 설정
-RESULT_DIR = "data"
+RESULT_DIR = "results"
 # EX1_IMAGE_DIR = "/mnt/14T-2/ktmin/glomerulus_segmentation/inference_batch_save_mask_contour_binary/input/"
 EX1_IMAGE_DIR = "data/task_1_glomerulus"
 
