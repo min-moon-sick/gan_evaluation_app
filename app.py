@@ -140,3 +140,12 @@ with tab1:
         if len(ex1_image_list) > 0:
             st.write("예시 파일:", ex1_image_list[:3])
         st.success("실험 1 평가가 완료되었습니다.")
+
+# 모든 평가가 끝나면 Google Sheets에 자동 저장
+if (
+    st.session_state.ex1_index >= len(ex1_image_list)
+    and not st.session_state.get("upload_done", False)
+):
+    save_csv_to_sheet("results/results_ex1.csv", "데이터셋 평가")
+    st.session_state.upload_done = True
+    st.success("✅ Google Sheets에 평가 결과가 자동 저장되었습니다!")
