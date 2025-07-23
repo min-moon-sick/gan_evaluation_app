@@ -5,14 +5,12 @@ from PIL import Image
 from save_to_gsheet import save_csv_to_sheet
 
 # 경로 설정
-PAIR_CSV = "data/image_pairs.csv"
-BLIND_CSV = "data/blind_images.csv"
 RESULT_DIR = "results"
 # EX1_IMAGE_DIR = "/mnt/14T-2/ktmin/glomerulus_segmentation/inference_batch_save_mask_contour_binary/input/"
 EX1_IMAGE_DIR = "data/task_1_glomerulus"
 
 EX1_RESULT_PATH = os.path.join(RESULT_DIR, "results_ex1.csv")
-EX2_RESULT_PATH = os.path.join(RESULT_DIR, "results_ex2.csv")
+
 
 # 디렉토리 확인
 os.makedirs(RESULT_DIR, exist_ok=True)
@@ -41,23 +39,11 @@ if "ex2_index" not in st.session_state:
 if "ex1_answers" not in st.session_state:
     st.session_state.ex1_answers = {}
 
-# 데이터 로딩 (실험 2 관련 부분 주석 처리)
-# try:
-#     image_pairs = pd.read_csv(PAIR_CSV)
-#     blind_images = pd.read_csv(BLIND_CSV)
-# except Exception as e:
-#     st.error(f"데이터 로딩 중 오류 발생: {e}")
-#     st.stop()
+
 if "ex1_answers" not in st.session_state:
     st.session_state.ex1_answers = {}
 
-# 데이터 로딩 (실험 2 관련 부분 주석 처리)
-# try:
-#     image_pairs = pd.read_csv(PAIR_CSV)
-#     blind_images = pd.read_csv(BLIND_CSV)
-# except Exception as e:
-#     st.error(f"데이터 로딩 중 오류 발생: {e}")
-#     st.stop()
+
 
 # UI 시작
 st.title("병리학자 정성 평가 플랫폼")
@@ -124,25 +110,26 @@ with tab1:
             # 다음 버튼
             if st.button("다음", key=f"submit_batch_{st.session_state.ex1_index}"):
                 # 현재 배치의 모든 답변을 저장 (덮어쓰기)
+                batch_results = []
                 for i in range(start_idx, end_idx):
                     answer_key = f"answer_{i}"
                     img_path = ex1_image_list[i]
                     answer = st.session_state.ex1_answers.get(answer_key, "있다")
-                    
-                    # 기존 결과에서 같은 이미지가 있으면 제거 (덮어쓰기)
-                    if os.path.exists(EX1_RESULT_PATH):
-                        existing_results = pd.read_csv(EX1_RESULT_PATH)
-                        existing_results = existing_results[existing_results['image_path'] != img_path]
-                        existing_results.to_csv(EX1_RESULT_PATH, index=False)
-                    
-                    result = pd.DataFrame([{
+                    batch_results.append({
                         "evaluator": name,
                         "affiliation": affiliation,
                         "image_path": img_path,
                         "answer": answer
-                    }])
-                    result.to_csv(EX1_RESULT_PATH, mode="a", header=not os.path.exists(EX1_RESULT_PATH), index=False)
-                
+                    })
+                # 기존 결과에서 같은 이미지가 있으면 제거 (덮어쓰기)
+                if os.path.exists(EX1_RESULT_PATH):
+                    existing_results = pd.read_csv(EX1_RESULT_PATH)
+                    img_paths = [r["image_path"] for r in batch_results]
+                    existing_results = existing_results[~existing_results["image_path"].isin(img_paths)]
+                    existing_results.to_csv(EX1_RESULT_PATH, index=False)
+                # 새 결과 append
+                result_df = pd.DataFrame(batch_results)
+                result_df.to_csv(EX1_RESULT_PATH, mode="a", header=not os.path.exists(EX1_RESULT_PATH), index=False)
                 # 다음 배치로 이동
                 st.session_state.ex1_index += 1
                 st.rerun()
